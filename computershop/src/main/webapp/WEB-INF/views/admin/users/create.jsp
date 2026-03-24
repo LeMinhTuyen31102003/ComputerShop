@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Computer Shop - Create User</title>
     <!-- Latest compiled and minified CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     
@@ -44,13 +44,16 @@
                         <label class="form-label" for="phone">Phone:</label>
                         <form:input type="text" class="form-control" id="phone" name="phone" path="phone" required="required"/>
                     </div>
-                    <button type="submit" class="btn btn-primary mt-3">Create User</button>
+                    <div class="form-group d-flex justify-content-between">
+                        <a href="/admin/users" class="btn btn-secondary mt-3">Back</a>
+                        <button type="submit" class="btn btn-primary mt-3">Create User</button>
+                    </div>
                 </form:form>
-                <c:if test="${not empty successMessage}">
+                <!-- <c:if test="${not empty successMessage}">
                     <div class="alert alert-success mt-3" role="alert">
                         ${successMessage}
                     </div>
-                </c:if>
+                </c:if> -->
             </div>
         </div>
     </div>
