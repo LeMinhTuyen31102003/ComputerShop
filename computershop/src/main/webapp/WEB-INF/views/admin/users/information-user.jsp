@@ -23,7 +23,7 @@
                     <div class="row">
                         <div class="col-md-10 col-12 mx-auto">
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h2>User Information Of Id: ${id}</h2>
+                                <h2>User Information Of Id: ${id}   </h2>
                                 <button class="btn btn-primary"
                                     onclick="window.location.href='/admin/users'">Back</button>
                             </div>

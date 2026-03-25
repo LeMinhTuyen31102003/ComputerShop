@@ -9,34 +9,26 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
-import lombok.AllArgsConstructor;
 
+@Entity
+@Table(name = "orders")
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "users")
-public class User {
-
+@NoArgsConstructor
+public class Order {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long id;
-    private String email;
-    private String fullname;
-    private String password;
-    private String address;
-    private String phone;
-    private String avatar;
+    private Double totalPrice;
     @ManyToOne
-    @JoinColumn(name = "role_id")
-    private Role role;
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @OneToMany(mappedBy = "user")
-    @ToString.Exclude
-    private List<Order> orders;
+    @OneToMany(mappedBy = "order")
+    private List<OrderDetail> orderDetails;
 }
