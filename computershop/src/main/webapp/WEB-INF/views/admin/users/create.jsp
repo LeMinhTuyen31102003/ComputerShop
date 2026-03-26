@@ -14,6 +14,19 @@
                         <title>Dashboard - SB Admin</title>
                         <link href="/css/styles.css" rel="stylesheet" />
                         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+                        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+                        
+                        <script>
+                            $(document).ready(() => {
+                                const avatarFile = $("#avatarFile");
+                                avatarFile.change(function (e) {
+                                    const imgURL = URL.createObjectURL(e.target.files[0]);
+                                    $("#avatarPreview").attr("src", imgURL);
+                                    $("#avatarPreview").css({ "display": "block" });
+                                });
+                            });
+                        </script>
+
                     </head>
             
                     <body class="sb-nav-fixed">
@@ -35,7 +48,7 @@
                                         <div class="col-md-6 col-12 mx-auto">
                                             <h1 class="text-center">Create a user</h1>
                                             <hr>
-                                            <form:form action="/admin/users/create" method="post" modelAttribute="user">
+                                            <form:form action="/admin/users/create" method="post" modelAttribute="user" enctype="multipart/form-data">
                                                 <div class="row">
                                                     <div class="form-group col-12 col-md-6">
                                                         <label class="form-label" for="email">Email:</label>
@@ -67,15 +80,18 @@
                                                 <div class="row">
                                                     <div class="form-group col-12 col-md-6">
                                                         <label class="form-label" for="role">Role:</label>
-                                                        <form:select class="form-control" id="role" name="role" path="role" required="required">
+                                                        <form:select class="form-control" id="role" name="role" path="role.id" required="required">
                                                             <form:option value="" label="Select Role" />
-                                                            <form:option value="USER" label="User" />
-                                                            <form:option value="ADMIN" label="Admin" />
+                                                            <form:option value="1" label="User" />
+                                                            <form:option value="2" label="Admin" />
                                                         </form:select>
                                                     </div>
                                                     <div class="form-group col-12 col-md-6">
-                                                        <label class="form-label" for="avatar">Avatar:</label>
-                                                        <form:input type="file" class="form-control" id="avatar" name="avatar" path="avatar"/>
+                                                        <label class="form-label" for="avatarFile">Avatar:</label>
+                                                        <input type="file" class="form-control" accept=".png, .jpg, .jpeg" id="avatarFile" name="avatarFile"/>
+                                                    </div>
+                                                    <div class="form-group col-12 col-md-6">
+                                                        <img id="avatarPreview" src="#" alt="Avatar Preview" style="display: none; max-width: 100%; height: auto;" />
                                                     </div>
                                                 </div>
                                                 <div class="form-group d-flex justify-content-between">
