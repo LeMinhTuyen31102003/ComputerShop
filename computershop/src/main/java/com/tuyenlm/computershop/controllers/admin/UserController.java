@@ -1,4 +1,4 @@
-package com.tuyenlm.computershop.controllers;
+package com.tuyenlm.computershop.controllers.admin;
 
 import java.util.List;
 import java.util.Optional;
