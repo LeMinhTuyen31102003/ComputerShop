@@ -1,12 +1,10 @@
 package com.tuyenlm.computershop.controllers.admin;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,14 +18,20 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.tuyenlm.computershop.models.User;
+import com.tuyenlm.computershop.services.UploadFileService;
 import com.tuyenlm.computershop.services.UserService;
 
 @Controller
 public class UserController {
     private final UserService userService;
+    private final UploadFileService uploadFileService;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UploadFileService uploadFileService,
+            PasswordEncoder passwordEncoder) {
         this.userService = userService;
+        this.uploadFileService = uploadFileService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @RequestMapping(value = "/admin/users", method = RequestMethod.GET)
@@ -62,7 +66,12 @@ public class UserController {
     }
 
     @PostMapping("/admin/users/update")
-    public String updateUser(@ModelAttribute User user, RedirectAttributes model) {
+    public String updateUser(@ModelAttribute User user, RedirectAttributes model,
+            @RequestParam MultipartFile avatarFile) {
+        if (!avatarFile.isEmpty()) {
+            String avatarFileName = uploadFileService.saveFile(avatarFile, "avatar"); // Save the uploaded avatar file
+            user.setAvatar(avatarFileName); // Set the avatar field in the user object
+        }
         userService.updateUser(user); // Update the user in the database
         model.addFlashAttribute("successMessage", "User updated successfully!"); // Add a success message to the model
         return "redirect:/admin/users"; // Redirect to the user list page after updating
@@ -77,27 +86,10 @@ public class UserController {
     @PostMapping("/admin/users/create")
     public String createUser(@ModelAttribute User user, RedirectAttributes model,
             @RequestParam MultipartFile avatarFile) {
-        try {
-            if (avatarFile != null && !avatarFile.isEmpty()) {
-                String rootPath = System.getProperty("user.dir"); // Get the root path of the project
-                Path uploadPath = Paths.get(rootPath, "src", "main", "webapp", "assets", "images", "avatar"); // Define
-                                                                                                              // the
-                                                                                                              // upload
-                                                                                                              // path
-                                                                                                              // for
-                                                                                                              // avatars
-                if (!Files.exists(uploadPath)) {
-                    Files.createDirectories(uploadPath);
-                }
-                String fileName = System.currentTimeMillis() + "_" + avatarFile.getOriginalFilename();
-                Path filePath = uploadPath.resolve(fileName);
-                Files.copy(avatarFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-                user.setAvatar(fileName);
-            }
-        } catch (Exception e) {
-            model.addFlashAttribute("errorMessage", "Error uploading avatar: " + e.getMessage());
-            return "redirect:/admin/users/create"; // Redirect back to the create user form if there's an error
-        }
+        String avatarFileName = uploadFileService.saveFile(avatarFile, "avatar"); // Save the uploaded avatar file
+        user.setAvatar(avatarFileName); // Set the avatar field in the user object
+        String encodedPassword = passwordEncoder.encode(user.getPassword()); // Encode the user's password
+        user.setPassword(encodedPassword); // Set the encoded password in the user object
         userService.saveUser(user); // Save the user to the database
         model.addFlashAttribute("successMessage", "User created successfully!");
         return "redirect:/admin/users"; // Redirect to the same page with a success message

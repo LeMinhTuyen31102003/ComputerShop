@@ -39,6 +39,7 @@ public class UserService {
             updatedUser.setFullname(user.getFullname());
             updatedUser.setPhone(user.getPhone());
             updatedUser.setAddress(user.getAddress());
+            updatedUser.setAvatar(user.getAvatar());
             userRepository.save(updatedUser);
         } else {
             throw new IllegalArgumentException("User not found with id: " + user.getId());
